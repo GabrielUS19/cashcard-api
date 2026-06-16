@@ -3,6 +3,10 @@ package com.gabriel.cashcard_api.controllers;
 import com.gabriel.cashcard_api.dtos.CashcardRequest;
 import com.gabriel.cashcard_api.dtos.CashcardResponse;
 import com.gabriel.cashcard_api.services.CashcardService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -34,5 +38,11 @@ public class CashcardController {
     private ResponseEntity<CashcardResponse> findById(@PathVariable("id") UUID id) {
         var cashcardResponse = cashcardService.findById(id);
         return ResponseEntity.ok(cashcardResponse);
+    }
+
+    @GetMapping
+    private ResponseEntity<Page<CashcardResponse>> findAll(
+            @PageableDefault(page = 0, size = 10, sort = "amount", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(cashcardService.findAll(pageable));
     }
 }
