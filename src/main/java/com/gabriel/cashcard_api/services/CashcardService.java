@@ -4,8 +4,13 @@ import com.gabriel.cashcard_api.dtos.CashcardRequest;
 import com.gabriel.cashcard_api.dtos.CashcardResponse;
 import com.gabriel.cashcard_api.models.CashcardModel;
 import com.gabriel.cashcard_api.repositories.CashcardRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Service
@@ -30,5 +35,16 @@ public class CashcardService {
                 .findById(id)
                 .map(model -> new CashcardResponse(model.getId(), model.getAmount()))
                 .orElseThrow(() -> new IllegalArgumentException("Cashcard não encontrado com o ID: " + id));
+    }
+
+    public Page<CashcardResponse> findAll(Pageable pageable) {
+        var finalPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                pageable.getSortOr(Sort.by("amount").descending())
+        );
+
+        return cashcardRepository.findAll(finalPageable)
+                .map(cashcardModel -> new CashcardResponse(cashcardModel.getId(), cashcardModel.getAmount()));
     }
 }
