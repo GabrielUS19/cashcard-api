@@ -6,6 +6,8 @@ import com.gabriel.cashcard_api.models.CashcardModel;
 import com.gabriel.cashcard_api.repositories.CashcardRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class CashcardService {
     private final CashcardRepository cashcardRepository;
@@ -21,5 +23,12 @@ public class CashcardService {
         var savedCashcard = cashcardRepository.save(cashcardModel);
 
         return new CashcardResponse(savedCashcard.getId(), savedCashcard.getAmount());
+    }
+
+    public CashcardResponse findById(UUID id) {
+        return cashcardRepository
+                .findById(id)
+                .map(model -> new CashcardResponse(model.getId(), model.getAmount()))
+                .orElseThrow(() -> new IllegalArgumentException("Cashcard não encontrado com o ID: " + id));
     }
 }
