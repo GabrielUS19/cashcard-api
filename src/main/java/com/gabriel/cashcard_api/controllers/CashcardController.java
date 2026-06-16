@@ -4,11 +4,10 @@ import com.gabriel.cashcard_api.dtos.CashcardRequest;
 import com.gabriel.cashcard_api.dtos.CashcardResponse;
 import com.gabriel.cashcard_api.services.CashcardService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/cashcards")
@@ -29,5 +28,11 @@ public class CashcardController {
                 .toUri();
 
         return ResponseEntity.created(location).body(cashcardResponse);
+    }
+
+    @GetMapping("/{id}")
+    private ResponseEntity<CashcardResponse> findById(@PathVariable("id") UUID id) {
+        var cashcardResponse = cashcardService.findById(id);
+        return ResponseEntity.ok(cashcardResponse);
     }
 }

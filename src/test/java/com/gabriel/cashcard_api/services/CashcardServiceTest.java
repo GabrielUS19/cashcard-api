@@ -11,9 +11,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -46,4 +48,33 @@ class CashcardServiceTest {
         verify(cashcardRepository).save(any(CashcardModel.class));
     }
 
+    @Test
+    void shouldReturnCashcardWhenValidId() {
+        var inputId = UUID.randomUUID();
+
+        var savedCashcard = new CashcardModel(inputId, new BigDecimal("100"));
+
+        when(cashcardRepository.findById(inputId)).thenReturn(Optional.of(savedCashcard));
+
+        var response = cashcardService.findById(inputId);
+
+        assertThat(response).isNotNull();
+        assertThat(response.id()).isEqualTo(inputId);
+        assertThat(response.amount()).isEqualByComparingTo(new BigDecimal("100"));
+
+        verify(cashcardRepository).findById(inputId);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenInvalidId() {
+        var inputId = UUID.randomUUID();
+
+        when(cashcardRepository.findById(inputId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> cashcardService.findById(inputId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Cashcard não encontrado com o ID: " + inputId);
+
+        verify(cashcardRepository).findById(inputId);
+    }
 }
