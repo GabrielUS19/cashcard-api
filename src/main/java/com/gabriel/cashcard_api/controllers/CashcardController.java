@@ -1,7 +1,7 @@
 package com.gabriel.cashcard_api.controllers;
 
-import com.gabriel.cashcard_api.dtos.CashcardRequest;
-import com.gabriel.cashcard_api.dtos.CashcardResponse;
+import com.gabriel.cashcard_api.dto.CashcardRequest;
+import com.gabriel.cashcard_api.dto.CashcardResponse;
 import com.gabriel.cashcard_api.services.CashcardService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

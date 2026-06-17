@@ -1,7 +1,8 @@
 package com.gabriel.cashcard_api.services;
 
-import com.gabriel.cashcard_api.dtos.CashcardRequest;
-import com.gabriel.cashcard_api.dtos.CashcardResponse;
+import com.gabriel.cashcard_api.dto.CashcardRequest;
+import com.gabriel.cashcard_api.dto.CashcardResponse;
+import com.gabriel.cashcard_api.exceptions.CashcardNotFoundException;
 import com.gabriel.cashcard_api.models.CashcardModel;
 import com.gabriel.cashcard_api.repositories.CashcardRepository;
 import org.springframework.data.domain.Page;
@@ -10,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 @Service
@@ -34,7 +34,7 @@ public class CashcardService {
         return cashcardRepository
                 .findById(id)
                 .map(model -> new CashcardResponse(model.getId(), model.getAmount()))
-                .orElseThrow(() -> new IllegalArgumentException("Cashcard não encontrado com o ID: " + id));
+                .orElseThrow(() -> new CashcardNotFoundException("Cashcard não encontrado com o ID: " + id));
     }
 
     public Page<CashcardResponse> findAll(Pageable pageable) {
