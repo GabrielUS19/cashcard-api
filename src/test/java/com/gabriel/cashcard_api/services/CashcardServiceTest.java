@@ -1,7 +1,8 @@
 package com.gabriel.cashcard_api.services;
 
-import com.gabriel.cashcard_api.dtos.CashcardRequest;
-import com.gabriel.cashcard_api.dtos.CashcardResponse;
+import com.gabriel.cashcard_api.dto.CashcardRequest;
+import com.gabriel.cashcard_api.dto.CashcardResponse;
+import com.gabriel.cashcard_api.exceptions.CashcardNotFoundException;
 import com.gabriel.cashcard_api.models.CashcardModel;
 import com.gabriel.cashcard_api.repositories.CashcardRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -71,14 +72,14 @@ class CashcardServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw a IllegalArgumentException when the user provides an invalid ID")
+    @DisplayName("Should throw a CashcardNotFoundException when the user provides an invalid ID")
     void shouldThrowExceptionWhenInvalidId() {
         var inputId = UUID.randomUUID();
 
         when(cashcardRepository.findById(inputId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> cashcardService.findById(inputId))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(CashcardNotFoundException.class)
                 .hasMessageContaining("Cashcard não encontrado com o ID: " + inputId);
 
         verify(cashcardRepository).findById(inputId);
