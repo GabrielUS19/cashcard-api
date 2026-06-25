@@ -34,7 +34,7 @@ public class CashcardService {
         return cashcardRepository
                 .findById(id)
                 .map(model -> new CashcardResponse(model.getId(), model.getAmount()))
-                .orElseThrow(() -> new CashcardNotFoundException("Cashcard não encontrado com o ID: " + id));
+                .orElseThrow(() -> new CashcardNotFoundException("Cash Card not found with ID: " + id));
     }
 
     public Page<CashcardResponse> findAll(Pageable pageable) {

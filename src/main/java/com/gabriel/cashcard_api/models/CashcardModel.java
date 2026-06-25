@@ -20,4 +20,8 @@ public class CashcardModel {
 
     @Column(nullable = false)
     private BigDecimal amount = BigDecimal.ZERO;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserModel user;
 }
