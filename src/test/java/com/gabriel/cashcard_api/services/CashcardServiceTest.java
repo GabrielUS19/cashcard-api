@@ -4,6 +4,7 @@ import com.gabriel.cashcard_api.dto.CashcardRequest;
 import com.gabriel.cashcard_api.dto.CashcardResponse;
 import com.gabriel.cashcard_api.exceptions.CashcardNotFoundException;
 import com.gabriel.cashcard_api.models.CashcardModel;
+import com.gabriel.cashcard_api.models.UserModel;
 import com.gabriel.cashcard_api.repositories.CashcardRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +39,7 @@ class CashcardServiceTest {
         var inputCashcard = new CashcardRequest(new BigDecimal("100.0"));
 
         UUID generatedId = UUID.randomUUID();
-        CashcardModel savedCashcard = new CashcardModel(generatedId, new BigDecimal("100.0"));
+        CashcardModel savedCashcard = new CashcardModel(generatedId, new BigDecimal("100.0"), new UserModel());
 
         when(cashcardRepository.save(any(CashcardModel.class))).thenReturn(savedCashcard);
 
@@ -58,7 +59,7 @@ class CashcardServiceTest {
     void shouldReturnCashcardWhenValidId() {
         var inputId = UUID.randomUUID();
 
-        var savedCashcard = new CashcardModel(inputId, new BigDecimal("100"));
+        var savedCashcard = new CashcardModel(inputId, new BigDecimal("100"), new UserModel());
 
         when(cashcardRepository.findById(inputId)).thenReturn(Optional.of(savedCashcard));
 
@@ -80,7 +81,7 @@ class CashcardServiceTest {
 
         assertThatThrownBy(() -> cashcardService.findById(inputId))
                 .isInstanceOf(CashcardNotFoundException.class)
-                .hasMessageContaining("Cashcard não encontrado com o ID: " + inputId);
+                .hasMessageContaining("Cash Card not found with ID: " + inputId);
 
         verify(cashcardRepository).findById(inputId);
     }
@@ -96,8 +97,8 @@ class CashcardServiceTest {
 
         var id1 = UUID.randomUUID();
         var id2 = UUID.randomUUID();
-        var card1 = new CashcardModel(id1, new BigDecimal("200"));
-        var card2 = new CashcardModel(id2, new BigDecimal("100"));
+        var card1 = new CashcardModel(id1, new BigDecimal("200"), new UserModel());
+        var card2 = new CashcardModel(id2, new BigDecimal("100"), new UserModel());
 
         List<CashcardModel> cashcardList = List.of(card1, card2);
         Page<CashcardModel> mockPage = new PageImpl<>(cashcardList);

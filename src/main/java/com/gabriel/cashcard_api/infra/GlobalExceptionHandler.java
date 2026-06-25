@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -15,6 +17,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.Instant;
+import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -55,6 +58,29 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
 
         return ResponseEntity.status(status).body(errorResponse);
+    }
+
+    @Override
+    protected @Nullable ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        var servletRequest = ((ServletWebRequest) request).getRequest();
+
+        var errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> new RestError.ValidationError(error.getField(), error.getDefaultMessage()))
+                .toList();
+
+        var errorResponse = new RestError(
+                "about:blank",
+                "Invalid Fields Value",
+                status.value(),
+                "Values provided are not valid",
+                servletRequest.getRequestURI(),
+                Instant.now(),
+                errors
+        );
+
+        return ResponseEntity.status(status.value()).body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)
