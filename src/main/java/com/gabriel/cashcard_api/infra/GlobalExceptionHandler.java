@@ -1,6 +1,7 @@
 package com.gabriel.cashcard_api.infra;
 
 import com.gabriel.cashcard_api.exceptions.CashcardNotFoundException;
+import com.gabriel.cashcard_api.exceptions.UserAlreadyExistException;
 import com.gabriel.cashcard_api.exceptions.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.jspecify.annotations.Nullable;
@@ -9,7 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.FieldError;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -18,7 +20,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.Instant;
-import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -40,6 +41,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(status).body(errorResponse);
     }
 
+    @ExceptionHandler(UserAlreadyExistException.class)
+    public ResponseEntity<RestError> handleUserAlreadyExistException(
+            UserAlreadyExistException ex,
+            HttpServletRequest request
+    ) {
+        int status = ex.getStatus().value();
+
+        var errorResponse = new RestError(
+                "about:blank",
+                "User not Found",
+                status,
+                ex.getMessage(),
+                request.getRequestURI(),
+                Instant.now()
+        );
+
+        return ResponseEntity.status(status).body(errorResponse);
+    }
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<RestError> handleUserNotFoundException(
             UserNotFoundException ex,
@@ -52,6 +72,44 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 "User not Found",
                 status,
                 ex.getMessage(),
+                request.getRequestURI(),
+                Instant.now()
+        );
+
+        return ResponseEntity.status(status).body(errorResponse);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<RestError> handleUsernameNotFoundException(
+            UsernameNotFoundException ex,
+            HttpServletRequest request
+    ) {
+        int status = HttpStatus.NOT_FOUND.value();
+
+        var errorResponse = new RestError(
+                "about:blank",
+                "User not Found",
+                status,
+                ex.getMessage(),
+                request.getRequestURI(),
+                Instant.now()
+        );
+
+        return ResponseEntity.status(status).body(errorResponse);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<RestError> handleBadCredentialsException(
+            BadCredentialsException ex,
+            HttpServletRequest request
+    ) {
+        int status = HttpStatus.UNAUTHORIZED.value();
+
+        var errorResponse = new RestError(
+                "about:blank",
+                "Bad credentials",
+                status,
+                "Invalid email or password",
                 request.getRequestURI(),
                 Instant.now()
         );
@@ -116,6 +174,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 request.getRequestURI(),
                 Instant.now()
         );
+
+        ex.printStackTrace();
 
         return ResponseEntity.status(status).body(errorResponse);
     }

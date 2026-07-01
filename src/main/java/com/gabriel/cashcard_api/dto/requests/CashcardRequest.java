@@ -1,4 +1,4 @@
-package com.gabriel.cashcard_api.dto;
+package com.gabriel.cashcard_api.dto.requests;
 
 import java.math.BigDecimal;
 

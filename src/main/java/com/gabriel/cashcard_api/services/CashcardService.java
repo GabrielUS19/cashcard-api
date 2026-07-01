@@ -1,7 +1,7 @@
 package com.gabriel.cashcard_api.services;
 
-import com.gabriel.cashcard_api.dto.CashcardRequest;
-import com.gabriel.cashcard_api.dto.CashcardResponse;
+import com.gabriel.cashcard_api.dto.requests.CashcardRequest;
+import com.gabriel.cashcard_api.dto.responses.CashcardResponse;
 import com.gabriel.cashcard_api.exceptions.CashcardNotFoundException;
 import com.gabriel.cashcard_api.models.CashcardModel;
 import com.gabriel.cashcard_api.repositories.CashcardRepository;
