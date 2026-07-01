@@ -2,6 +2,7 @@ package com.gabriel.cashcard_api.services;
 
 import com.gabriel.cashcard_api.dto.UserCreateDTO;
 import com.gabriel.cashcard_api.exceptions.UserAlreadyExistException;
+import com.gabriel.cashcard_api.exceptions.UserNotFoundException;
 import com.gabriel.cashcard_api.models.UserModel;
 import com.gabriel.cashcard_api.repositories.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -67,4 +68,35 @@ class UserServiceTest {
         verify(userRepository, never()).save(any(UserModel.class));
     }
 
+    @Test
+    @DisplayName("Should return User when valid ID")
+    void shouldReturnUserWhenValidId() {
+        var generatedId = UUID.randomUUID();
+
+        var savedUser = new UserModel(generatedId, "Gabriel", "email_real@hotmail.com", "Senhaforte@123", new HashSet<>());
+
+        when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(savedUser));
+
+        var result = userService.findById(generatedId);
+
+        assertThat(result).isNotNull();
+
+        assertThat(result.id()).isEqualTo(generatedId);
+
+        verify(userRepository).findById(generatedId);
+    }
+
+    @Test
+    @DisplayName("Should Throw UserNotFoundException when user with this ID not found")
+    void shouldThrowUserNotFoundExceptionWhenInvalidId() {
+        var generatedId = UUID.randomUUID();
+
+        when(userRepository.findById(generatedId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> userService.findById(generatedId))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessageContaining("User not found with ID: " + generatedId);
+
+        verify(userRepository).findById(generatedId);
+    }
 }
