@@ -1,6 +1,6 @@
 package com.gabriel.cashcard_api.services;
 
-import com.gabriel.cashcard_api.dto.UserCreateDTO;
+import com.gabriel.cashcard_api.dto.requests.UserCreateRequest;
 import com.gabriel.cashcard_api.exceptions.UserAlreadyExistException;
 import com.gabriel.cashcard_api.exceptions.UserNotFoundException;
 import com.gabriel.cashcard_api.models.UserModel;
@@ -33,7 +33,7 @@ class UserServiceTest {
     @Test
     @DisplayName("Should return user when valid credentials")
     void shouldReturnUserWhenValidCredential() {
-        var inputUser = new UserCreateDTO("Gabriel", "email_real@hotmail.com", "Senhaforte@123", "Senhaforte@123");
+        var inputUser = new UserCreateRequest("Gabriel", "email_real@hotmail.com", "Senhaforte@123", "Senhaforte@123");
 
         var generatedId = UUID.randomUUID();
         var savedUser = new UserModel(generatedId, "Gabriel", "email_real@hotmail.com", "Senhaforte@123", new HashSet<>());
@@ -53,7 +53,7 @@ class UserServiceTest {
     @Test
     @DisplayName("Should throw UserAlreadyExistException when email already in use")
     void shouldThrowExceptionWhenEmailAlreadyInUse() {
-        var inputUser = new UserCreateDTO("Gabriel", "email_real@hotmail.com", "Senhaforte@123", "Senhaforte@123");
+        var inputUser = new UserCreateRequest("Gabriel", "email_real@hotmail.com", "Senhaforte@123", "Senhaforte@123");
 
         var generatedId = UUID.randomUUID();
         var savedUser = new UserModel(generatedId, "Gabriel", "email_real@hotmail.com", "Senhaforte@123", new HashSet<>());

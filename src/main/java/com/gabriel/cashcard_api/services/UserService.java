@@ -1,11 +1,12 @@
 package com.gabriel.cashcard_api.services;
 
-import com.gabriel.cashcard_api.dto.UserCreateDTO;
-import com.gabriel.cashcard_api.dto.UserResponseDTO;
+import com.gabriel.cashcard_api.dto.requests.UserCreateRequest;
+import com.gabriel.cashcard_api.dto.responses.UserResponse;
 import com.gabriel.cashcard_api.exceptions.UserAlreadyExistException;
 import com.gabriel.cashcard_api.exceptions.UserNotFoundException;
 import com.gabriel.cashcard_api.models.UserModel;
 import com.gabriel.cashcard_api.repositories.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -13,12 +14,14 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder encoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder encoder) {
         this.userRepository = userRepository;
+        this.encoder = encoder;
     }
 
-    public UserResponseDTO createUser(UserCreateDTO user) {
+    public UserResponse createUser(UserCreateRequest user) {
         if (!userRepository.findByEmail(user.email()).isEmpty()) {
             throw new UserAlreadyExistException("Email already in use");
         }
@@ -27,17 +30,17 @@ public class UserService {
 
         userEntity.setName(user.name());
         userEntity.setEmail(user.email());
-        userEntity.setPassword(user.password());
+        userEntity.setPassword(encoder.encode(user.password()));
 
         var savedUser = userRepository.save(userEntity);
 
-        return new UserResponseDTO(savedUser.getId(), savedUser.getName(), savedUser.getEmail());
+        return new UserResponse(savedUser.getId(), savedUser.getName(), savedUser.getEmail());
     }
 
-    public UserResponseDTO findById(UUID userId) {
+    public UserResponse findById(UUID userId) {
         return userRepository
                 .findById(userId)
-                .map(u -> new UserResponseDTO(u.getId(), u.getName(), u.getEmail()))
+                .map(u -> new UserResponse(u.getId(), u.getName(), u.getEmail()))
                 .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
     }
 }

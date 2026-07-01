@@ -1,4 +1,4 @@
-package com.gabriel.cashcard_api.dto;
+package com.gabriel.cashcard_api.dto.requests;
 
 import com.gabriel.cashcard_api.infra.validate.FieldsValueMatch;
 import com.gabriel.cashcard_api.infra.validate.StrongPassword;
@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotBlank;
         field = "password",
         fieldMatch = "confirmPassword"
 )
-public record UserCreateDTO(
+public record UserCreateRequest(
         @NotBlank(message = "Field name is required")
         String name,
 
