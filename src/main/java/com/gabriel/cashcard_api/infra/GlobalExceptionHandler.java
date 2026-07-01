@@ -1,6 +1,7 @@
 package com.gabriel.cashcard_api.infra;
 
 import com.gabriel.cashcard_api.exceptions.CashcardNotFoundException;
+import com.gabriel.cashcard_api.exceptions.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.jspecify.annotations.Nullable;
 import org.springframework.http.HttpHeaders;
@@ -35,6 +36,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 request.getRequestURI(),
                 Instant.now()
                 );
+
+        return ResponseEntity.status(status).body(errorResponse);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<RestError> handleUserNotFoundException(
+            UserNotFoundException ex,
+            HttpServletRequest request
+    ) {
+        int status = ex.getStatus().value();
+
+        var errorResponse = new RestError(
+                "about:blank",
+                "User not Found",
+                status,
+                ex.getMessage(),
+                request.getRequestURI(),
+                Instant.now()
+        );
 
         return ResponseEntity.status(status).body(errorResponse);
     }
