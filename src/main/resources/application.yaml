@@ -2,7 +2,5 @@ spring:
  application:
   name: cashcard-api
 
-api:
- security:
-  token:
-   secret: ${JWT_SECRET:secret}
+ profiles:
+  active: dev
