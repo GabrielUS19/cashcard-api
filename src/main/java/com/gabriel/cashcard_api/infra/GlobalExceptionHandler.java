@@ -50,7 +50,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         var errorResponse = new RestError(
                 "about:blank",
-                "User not Found",
+                "Invalid Fields Value",
                 status,
                 ex.getMessage(),
                 request.getRequestURI(),
