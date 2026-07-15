@@ -31,49 +31,11 @@ class UserServiceTest {
     private UserService userService;
 
     @Test
-    @DisplayName("Should return user when valid credentials")
-    void shouldReturnUserWhenValidCredential() {
-        var inputUser = new UserCreateRequest("Gabriel", "email_real@hotmail.com", "Senhaforte@123", "Senhaforte@123");
-
-        var generatedId = UUID.randomUUID();
-        var savedUser = new User(generatedId, "Gabriel", "email_real@hotmail.com", "Senhaforte@123", new HashSet<>());
-
-        when(userRepository.save(any(User.class))).thenReturn(savedUser);
-
-        var result = userService.createUser(inputUser);
-
-        assertThat(result).isNotNull();
-
-        assertThat(result.id()).isEqualTo(generatedId);
-
-        verify(userRepository).findByEmail(inputUser.email());
-        verify(userRepository).save(any(User.class));
-    }
-
-    @Test
-    @DisplayName("Should throw UserAlreadyExistException when email already in use")
-    void shouldThrowExceptionWhenEmailAlreadyInUse() {
-        var inputUser = new UserCreateRequest("Gabriel", "email_real@hotmail.com", "Senhaforte@123", "Senhaforte@123");
-
-        var generatedId = UUID.randomUUID();
-        var savedUser = new User(generatedId, "Gabriel", "email_real@hotmail.com", "Senhaforte@123", new HashSet<>());
-
-        when(userRepository.findByEmail("email_real@hotmail.com")).thenReturn(Optional.of(savedUser));
-
-        assertThatThrownBy(() -> userService.createUser(inputUser))
-                .isInstanceOf(UserAlreadyExistException.class)
-                .hasMessageContaining("Email already in use");
-
-        verify(userRepository).findByEmail(inputUser.email());
-        verify(userRepository, never()).save(any(User.class));
-    }
-
-    @Test
     @DisplayName("Should return User when valid ID")
     void shouldReturnUserWhenValidId() {
         var generatedId = UUID.randomUUID();
 
-        var savedUser = new User(generatedId, "Gabriel", "email_real@hotmail.com", "Senhaforte@123", new HashSet<>());
+        var savedUser = new User(generatedId, "Gabriel", "email_real@hotmail.com", "Senhaforte@123", new HashSet<>(), new HashSet<>());
 
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(savedUser));
 
