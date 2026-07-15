@@ -1,8 +1,7 @@
-package com.gabriel.cashcard_api.infra;
+package com.gabriel.cashcard_api.infra.exceptions;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 public record RestError(
         String type,

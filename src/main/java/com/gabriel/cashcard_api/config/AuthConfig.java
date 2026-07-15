@@ -1,5 +1,6 @@
 package com.gabriel.cashcard_api.config;
 
+import com.gabriel.cashcard_api.infra.security.CustomUserDetails;
 import com.gabriel.cashcard_api.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +18,7 @@ public class AuthConfig implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        var user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        return CustomUserDetails.fromEntity(user);
     }
 }
