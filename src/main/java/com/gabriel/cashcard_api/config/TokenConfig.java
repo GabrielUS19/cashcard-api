@@ -3,7 +3,7 @@ package com.gabriel.cashcard_api.config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.gabriel.cashcard_api.models.UserModel;
+import com.gabriel.cashcard_api.entities.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +16,7 @@ public class TokenConfig {
     @Value("${api.security.token.secret}")
     private String secret;
 
-    public String generateToken(UserModel user) {
+    public String generateToken(User user) {
         var algorithm = Algorithm.HMAC256(secret);
 
         return JWT.create()

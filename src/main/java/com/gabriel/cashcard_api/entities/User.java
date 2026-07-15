@@ -1,4 +1,4 @@
-package com.gabriel.cashcard_api.models;
+package com.gabriel.cashcard_api.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,14 +7,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
 @Getter
 @Setter
-@Table(name = "users")
-public class UserModel implements UserDetails {
+@Entity
+@Table(name = "tb_user")
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -30,7 +30,7 @@ public class UserModel implements UserDetails {
     private String password;
 
     @OneToMany(mappedBy = "user")
-    private Set<CashcardModel> cashCards = new HashSet<>();
+    private Set<Cashcard> cashCards = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

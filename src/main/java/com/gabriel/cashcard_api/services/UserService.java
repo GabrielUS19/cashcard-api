@@ -4,7 +4,7 @@ import com.gabriel.cashcard_api.dto.requests.UserCreateRequest;
 import com.gabriel.cashcard_api.dto.responses.UserResponse;
 import com.gabriel.cashcard_api.exceptions.UserAlreadyExistException;
 import com.gabriel.cashcard_api.exceptions.UserNotFoundException;
-import com.gabriel.cashcard_api.models.UserModel;
+import com.gabriel.cashcard_api.entities.User;
 import com.gabriel.cashcard_api.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class UserService {
             throw new UserAlreadyExistException("Email already in use");
         }
 
-        var userEntity = new UserModel();
+        var userEntity = new User();
 
         userEntity.setName(user.name());
         userEntity.setEmail(user.email());

@@ -3,7 +3,7 @@ package com.gabriel.cashcard_api.services;
 import com.gabriel.cashcard_api.dto.requests.UserCreateRequest;
 import com.gabriel.cashcard_api.exceptions.UserAlreadyExistException;
 import com.gabriel.cashcard_api.exceptions.UserNotFoundException;
-import com.gabriel.cashcard_api.models.UserModel;
+import com.gabriel.cashcard_api.entities.User;
 import com.gabriel.cashcard_api.repositories.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,9 +36,9 @@ class UserServiceTest {
         var inputUser = new UserCreateRequest("Gabriel", "email_real@hotmail.com", "Senhaforte@123", "Senhaforte@123");
 
         var generatedId = UUID.randomUUID();
-        var savedUser = new UserModel(generatedId, "Gabriel", "email_real@hotmail.com", "Senhaforte@123", new HashSet<>());
+        var savedUser = new User(generatedId, "Gabriel", "email_real@hotmail.com", "Senhaforte@123", new HashSet<>());
 
-        when(userRepository.save(any(UserModel.class))).thenReturn(savedUser);
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
 
         var result = userService.createUser(inputUser);
 
@@ -47,7 +47,7 @@ class UserServiceTest {
         assertThat(result.id()).isEqualTo(generatedId);
 
         verify(userRepository).findByEmail(inputUser.email());
-        verify(userRepository).save(any(UserModel.class));
+        verify(userRepository).save(any(User.class));
     }
 
     @Test
@@ -56,7 +56,7 @@ class UserServiceTest {
         var inputUser = new UserCreateRequest("Gabriel", "email_real@hotmail.com", "Senhaforte@123", "Senhaforte@123");
 
         var generatedId = UUID.randomUUID();
-        var savedUser = new UserModel(generatedId, "Gabriel", "email_real@hotmail.com", "Senhaforte@123", new HashSet<>());
+        var savedUser = new User(generatedId, "Gabriel", "email_real@hotmail.com", "Senhaforte@123", new HashSet<>());
 
         when(userRepository.findByEmail("email_real@hotmail.com")).thenReturn(Optional.of(savedUser));
 
@@ -65,7 +65,7 @@ class UserServiceTest {
                 .hasMessageContaining("Email already in use");
 
         verify(userRepository).findByEmail(inputUser.email());
-        verify(userRepository, never()).save(any(UserModel.class));
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
@@ -73,7 +73,7 @@ class UserServiceTest {
     void shouldReturnUserWhenValidId() {
         var generatedId = UUID.randomUUID();
 
-        var savedUser = new UserModel(generatedId, "Gabriel", "email_real@hotmail.com", "Senhaforte@123", new HashSet<>());
+        var savedUser = new User(generatedId, "Gabriel", "email_real@hotmail.com", "Senhaforte@123", new HashSet<>());
 
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(savedUser));
 

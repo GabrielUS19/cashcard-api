@@ -3,7 +3,7 @@ package com.gabriel.cashcard_api.services;
 import com.gabriel.cashcard_api.config.TokenConfig;
 import com.gabriel.cashcard_api.dto.requests.LoginRequest;
 import com.gabriel.cashcard_api.dto.responses.LoginResponse;
-import com.gabriel.cashcard_api.models.UserModel;
+import com.gabriel.cashcard_api.entities.User;
 import com.gabriel.cashcard_api.repositories.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,7 +25,7 @@ public class AuthService {
         var userAndPass = new UsernamePasswordAuthenticationToken(request.email(), request.password());
         var authentication = authenticationManager.authenticate(userAndPass);
 
-        UserModel user = (UserModel) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
         String accessToken = tokenConfig.generateToken(user);
 
         return new LoginResponse(accessToken);

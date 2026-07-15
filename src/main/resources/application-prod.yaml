@@ -5,6 +5,8 @@ spring:
     password: "${DB_PASSWORD}"
 
   jpa:
+    hibernate:
+      auto-ddl: none
 
     show-sql: true
 

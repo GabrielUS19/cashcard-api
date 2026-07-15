@@ -3,7 +3,7 @@ package com.gabriel.cashcard_api.services;
 import com.gabriel.cashcard_api.dto.requests.CashcardRequest;
 import com.gabriel.cashcard_api.dto.responses.CashcardResponse;
 import com.gabriel.cashcard_api.exceptions.CashcardNotFoundException;
-import com.gabriel.cashcard_api.models.CashcardModel;
+import com.gabriel.cashcard_api.entities.Cashcard;
 import com.gabriel.cashcard_api.repositories.CashcardRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +22,7 @@ public class CashcardService {
     }
 
     public CashcardResponse createCashcard(CashcardRequest cashcardRequest) {
-        var cashcardModel = new CashcardModel();
+        var cashcardModel = new Cashcard();
         cashcardModel.setAmount(cashcardRequest.amount());
 
         var savedCashcard = cashcardRepository.save(cashcardModel);
