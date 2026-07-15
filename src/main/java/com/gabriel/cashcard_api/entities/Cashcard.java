@@ -1,4 +1,4 @@
-package com.gabriel.cashcard_api.models;
+package com.gabriel.cashcard_api.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,22 +6,22 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Entity
-@Table(name = "cash_card")
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
 @Setter
 @Getter
-public class CashcardModel {
+@Entity
+@Table(name = "tb_cashcard")
+public class Cashcard {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal amount = BigDecimal.ZERO;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserModel user;
+    private User user;
 }

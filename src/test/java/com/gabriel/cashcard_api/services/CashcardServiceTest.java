@@ -3,8 +3,8 @@ package com.gabriel.cashcard_api.services;
 import com.gabriel.cashcard_api.dto.requests.CashcardRequest;
 import com.gabriel.cashcard_api.dto.responses.CashcardResponse;
 import com.gabriel.cashcard_api.exceptions.CashcardNotFoundException;
-import com.gabriel.cashcard_api.models.CashcardModel;
-import com.gabriel.cashcard_api.models.UserModel;
+import com.gabriel.cashcard_api.entities.Cashcard;
+import com.gabriel.cashcard_api.entities.User;
 import com.gabriel.cashcard_api.repositories.CashcardRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,9 +39,9 @@ class CashcardServiceTest {
         var inputCashcard = new CashcardRequest(new BigDecimal("100.0"));
 
         UUID generatedId = UUID.randomUUID();
-        CashcardModel savedCashcard = new CashcardModel(generatedId, new BigDecimal("100.0"), new UserModel());
+        Cashcard savedCashcard = new Cashcard(generatedId, new BigDecimal("100.0"), new User());
 
-        when(cashcardRepository.save(any(CashcardModel.class))).thenReturn(savedCashcard);
+        when(cashcardRepository.save(any(Cashcard.class))).thenReturn(savedCashcard);
 
         CashcardResponse result = cashcardService.createCashcard(inputCashcard);
 
@@ -51,7 +51,7 @@ class CashcardServiceTest {
 
         assertThat(result.amount()).isEqualByComparingTo(inputCashcard.amount());
 
-        verify(cashcardRepository).save(any(CashcardModel.class));
+        verify(cashcardRepository).save(any(Cashcard.class));
     }
 
     @Test
@@ -59,7 +59,7 @@ class CashcardServiceTest {
     void shouldReturnCashcardWhenValidId() {
         var inputId = UUID.randomUUID();
 
-        var savedCashcard = new CashcardModel(inputId, new BigDecimal("100"), new UserModel());
+        var savedCashcard = new Cashcard(inputId, new BigDecimal("100"), new User());
 
         when(cashcardRepository.findById(inputId)).thenReturn(Optional.of(savedCashcard));
 
@@ -97,11 +97,11 @@ class CashcardServiceTest {
 
         var id1 = UUID.randomUUID();
         var id2 = UUID.randomUUID();
-        var card1 = new CashcardModel(id1, new BigDecimal("200"), new UserModel());
-        var card2 = new CashcardModel(id2, new BigDecimal("100"), new UserModel());
+        var card1 = new Cashcard(id1, new BigDecimal("200"), new User());
+        var card2 = new Cashcard(id2, new BigDecimal("100"), new User());
 
-        List<CashcardModel> cashcardList = List.of(card1, card2);
-        Page<CashcardModel> mockPage = new PageImpl<>(cashcardList);
+        List<Cashcard> cashcardList = List.of(card1, card2);
+        Page<Cashcard> mockPage = new PageImpl<>(cashcardList);
 
         when(cashcardRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
 
@@ -127,10 +127,10 @@ class CashcardServiceTest {
     void shouldReturnEmptyContentWhenInvalidPage() {
         var pageable = PageRequest.of(1, 10, Sort.by("amount").descending());
 
-        List<CashcardModel> emptyDatabaseResult = List.of();
+        List<Cashcard> emptyDatabaseResult = List.of();
         long totalElementsInDatabase = 2L;
 
-        Page<CashcardModel> mockEmptyPage = new PageImpl<>(emptyDatabaseResult, pageable, totalElementsInDatabase);
+        Page<Cashcard> mockEmptyPage = new PageImpl<>(emptyDatabaseResult, pageable, totalElementsInDatabase);
 
         when(cashcardRepository.findAll(pageable)).thenReturn(mockEmptyPage);
 
