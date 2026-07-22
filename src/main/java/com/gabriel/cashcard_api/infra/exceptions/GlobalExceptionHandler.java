@@ -1,4 +1,4 @@
-package com.gabriel.cashcard_api.infra;
+package com.gabriel.cashcard_api.infra.exceptions;
 
 import com.gabriel.cashcard_api.exceptions.CashcardNotFoundException;
 import com.gabriel.cashcard_api.exceptions.UserAlreadyExistException;
