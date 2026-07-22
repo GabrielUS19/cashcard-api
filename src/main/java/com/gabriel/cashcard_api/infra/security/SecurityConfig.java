@@ -1,4 +1,4 @@
-package com.gabriel.cashcard_api.config;
+package com.gabriel.cashcard_api.infra.security;
 
 import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +17,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     private final SecurityFilter securityFilter;
 
     public SecurityConfig(SecurityFilter securityFilter) {
@@ -32,15 +31,17 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/users").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers(HttpMethod.POST, "/auth/register").hasRole("ADMIN")
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/users/**").permitAll()
+                        .anyRequest().authenticated()
+                )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
