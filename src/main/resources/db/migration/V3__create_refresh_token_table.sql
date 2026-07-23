@@ -1,0 +1,10 @@
+CREATE TABLE tb_refresh_token (
+    id BIGSERIAL PRIMARY KEY,
+    token UUID NOT NULL UNIQUE,
+    user_id UUID NOT NULL,
+    revoked BOOLEAN DEFAULT FALSE,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES tb_user(id) ON DELETE CASCADE
+);
